@@ -59,7 +59,7 @@ void generate_airfoil_4digit(int m, int p, int t, double c, int N, Airfoil_t *af
 
 void generate_airfoil_5digit(int naca5digit, double c, int N, Airfoil_t *af) {
   int camber_line = naca5digit/100;
-  double t = (double)(naca5digit%100);
+  double t = (double)(naca5digit%100)/100.0;
   double p, m, k1;
   switch (camber_line) {
     case 210:
@@ -69,7 +69,7 @@ void generate_airfoil_5digit(int naca5digit, double c, int N, Airfoil_t *af) {
       break;
     case 220:
       p = 0.10;
-      m = 0.126;
+      m = 0.1260;
       k1 = 51.640;
       break;
     case 230:
