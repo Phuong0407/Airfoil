@@ -141,6 +141,6 @@ void plot_airfoil(const char* filename) {
     fprintf(gnuplotPipe, "set size ratio -1\n");
     fprintf(gnuplotPipe, "set grid\n");
     fprintf(gnuplotPipe, "plot '%s' with lines lw 2 title 'Airfoil'\n", filename);
-    
+
     fflush(gnuplotPipe);
 }

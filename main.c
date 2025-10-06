@@ -6,7 +6,7 @@ int main() {
     double c = 1.0;
     Airfoil_t af;
 
-    generate_airfoil_4digit(m, p, t, c, N, &af);
+    generate_airfoil_4digit(2412, c, N, &af);
 
     FILE *fp = fopen("naca2412.dat", "w");
     if (!fp) {
