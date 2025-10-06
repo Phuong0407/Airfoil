@@ -13,47 +13,50 @@ typedef struct {
   int N;
 } Airfoil_t;
 
-void generate_airfoil_4digit(int m, int p, int t, double c, int N, Airfoil_t *af) {
-    double m_real = m/100.0;
-    double p_real = p/10.0;
-    double t_real = t/100.0;
+void generate_airfoil_4digit(int naca4digit, double c, int N, Airfoil_t *af) {
+  double m = (double)(naca4digit/1000)/100.0;
+  double p = (double)(naca4digit/100)/10.0;
+  double t = (double)(naca4digit%100)/100.0;
 
-    af->x_c = (double*)malloc((N+1)*sizeof(double));
-    af->y_c = (double*)malloc((N+1)*sizeof(double));
-    af->x_u = (double*)malloc((N+1)*sizeof(double));
-    af->y_u = (double*)malloc((N+1)*sizeof(double));
-    af->x_l = (double*)malloc((N+1)*sizeof(double));
-    af->y_l = (double*)malloc((N+1)*sizeof(double));
-    af->c = c;
-    af->N = N;
+  af->x_c = (double*)malloc((N+1)*sizeof(double));
+  af->y_c = (double*)malloc((N+1)*sizeof(double));
+  af->x_u = (double*)malloc((N+1)*sizeof(double));
+  af->y_u = (double*)malloc((N+1)*sizeof(double));
+  af->x_l = (double*)malloc((N+1)*sizeof(double));
+  af->y_l = (double*)malloc((N+1)*sizeof(double));
+  af->c = c;
+  af->N = N;
 
-    for (int i = 0; i <= N; ++i) {
-      double xp = (double)i/(double)N;
-      double x = xp * c;
-      af->x_c[i] = x;
+  for (int i = 0; i <= N; ++i) {
+    double xp = (double)i/(double)N;
+    double x = xp * c;
+    af->x_c[i] = x;
 
-      double A = 0.0;
-      double dyc = 0.0;
-      if (xp <= p_real) {
-        A = m_real/(p_real*p_real);
-        af->y_c[i] = c * A * (2.0*p_real*xp - xp*xp);
-        dyc = 2.0 * A * (p_real - xp);
-      } else {
-        A = m_real/((1-p_real)*(1-p_real));
-        af->y_c[i] = c * A * (1.0 - 2.0*p_real + 2.0*p_real*xp - xp*xp);
-        dyc = 2.0 * A * (p_real - xp);
-      }
+    double A = 0.0;
+    double dyc = 0.0;
+    if (p == 0.0) {
+      af->y_c[i] = 0.0;
+      dyc = 0.0;
+    } else if (xp <= p) {
+      A = m/(p*p);
+      af->y_c[i] = c * A * (2.0*p*xp - xp*xp);
+      dyc = 2.0 * A * (p - xp);
+    } else {
+      A = m/((1-p)*(1-p));
+      af->y_c[i] = c * A * (1.0 - 2.0*p + 2.0*p*xp - xp*xp);
+      dyc = 2.0 * A * (p - xp);
+    }
 
-      double theta = atan(dyc);
-      double y_t = 5.0*t_real*c*(0.2969*sqrt(xp) - 0.1260*xp - 0.3516*xp*xp + 0.2843*xp*xp*xp - 0.1015*xp*xp*xp*xp);
+    double theta = atan(dyc);
+    double y_t = 5.0*t*c*(0.2969*sqrt(xp) - 0.1260*xp - 0.3516*xp*xp + 0.2843*xp*xp*xp - 0.1015*xp*xp*xp*xp);
 
-      double sintheta = sin(theta);
-      double costheta = cos(theta);
+    double sintheta = sin(theta);
+    double costheta = cos(theta);
 
-      af->x_u[i] = af->x_c[i] - y_t*sintheta;
-      af->y_u[i] = af->y_c[i] + y_t*costheta;
-      af->x_l[i] = af->x_c[i] + y_t*sintheta;
-      af->y_l[i] = af->y_c[i] - y_t*costheta;
+    af->x_u[i] = af->x_c[i] - y_t*sintheta;
+    af->y_u[i] = af->y_c[i] + y_t*costheta;
+    af->x_l[i] = af->x_c[i] + y_t*sintheta;
+    af->y_l[i] = af->y_c[i] - y_t*costheta;
   }
 }
 
